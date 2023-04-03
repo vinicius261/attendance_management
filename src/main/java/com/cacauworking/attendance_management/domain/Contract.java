@@ -1,5 +1,8 @@
 package com.cacauworking.attendance_management.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +25,7 @@ public class Contract {
     private Status status;
     @OneToOne(mappedBy = "contract")
     private AttendanceManagement attendanceManagement;
+    @JsonIgnoreProperties("contracts")
     @ManyToOne(fetch = FetchType.LAZY)
     private Employee employee;
 }

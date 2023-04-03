@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("registrodeponto")
+@RequestMapping("adimin/registrodeponto")
 @RequiredArgsConstructor
 public class AttendanceManagementController {
 

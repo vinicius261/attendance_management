@@ -22,6 +22,7 @@ public class ContractController {
     private final ContractMapper mapper;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ContractGetDTO save (@RequestBody ContractSaveDTO dto){
         Contract contract = Contract.builder()
                 .employee(employeeService.findByDocument(dto.getEmployeeDocument()))
@@ -35,8 +36,8 @@ public class ContractController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ContractGetDTO> findAll(){
-        return mapper.listContractToListContractGetDTO(contractService.findAll());
+    public List<Contract> findAll(){
+        return contractService.findAll();
     }
 
     @GetMapping("{contractNumber}")
@@ -54,7 +55,7 @@ public class ContractController {
                 .toList();
     }
 
-    @GetMapping("{documentoFuncionario}")
+    @GetMapping("/funcionario/{documentoFuncionario}")
     public List<ContractGetDTO> findAllByEmployee(@PathVariable String documentoFuncionario){
         return  contractService
                 .findAllByEmployee(employeeService.findByDocument(documentoFuncionario))
