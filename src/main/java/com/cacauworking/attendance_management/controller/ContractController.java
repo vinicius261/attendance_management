@@ -7,6 +7,7 @@ import com.cacauworking.attendance_management.mapper.ContractMapper;
 import com.cacauworking.attendance_management.service.services.ContractService;
 import com.cacauworking.attendance_management.service.services.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,11 +34,9 @@ public class ContractController {
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<ContractGetDTO> findAll(){
-        return  contractService
-                .findAll()
-                .stream().map(mapper::contractToContractGetDTO)
-                .toList();
+        return mapper.listContractToListContractGetDTO(contractService.findAll());
     }
 
     @GetMapping("{contractNumber}")
