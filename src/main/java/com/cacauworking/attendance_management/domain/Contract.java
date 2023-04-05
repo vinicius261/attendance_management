@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Contract {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -23,7 +24,8 @@ public class Contract {
     private LocalDate end;
     @Enumerated(EnumType.STRING)
     private Status status;
-    @OneToOne(mappedBy = "contract")
+    @JsonIgnoreProperties("contract")
+    @OneToOne(mappedBy = "contract", cascade = CascadeType.PERSIST)
     private AttendanceManagement attendanceManagement;
     @JsonIgnoreProperties("contracts")
     @ManyToOne(fetch = FetchType.LAZY)

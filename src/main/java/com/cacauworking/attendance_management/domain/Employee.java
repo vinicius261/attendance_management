@@ -1,5 +1,6 @@
 package com.cacauworking.attendance_management.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Past;
 import lombok.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Employee {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -23,5 +25,6 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     private Status status;
     @OneToMany(mappedBy = "employee")
+    @JsonIgnoreProperties("employee")
     private List<Contract> contracts;
 }

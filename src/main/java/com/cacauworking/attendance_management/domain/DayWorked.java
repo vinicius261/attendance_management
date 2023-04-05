@@ -1,10 +1,8 @@
 package com.cacauworking.attendance_management.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,11 +12,13 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class DayWorked {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @ManyToOne
+    @JsonIgnoreProperties("workedDays")
     private AttendanceManagement attendanceManagement;
     private LocalDate date;
     private LocalDateTime entryTime;

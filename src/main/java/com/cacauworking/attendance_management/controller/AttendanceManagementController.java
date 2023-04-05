@@ -1,27 +1,38 @@
 package com.cacauworking.attendance_management.controller;
 
 import com.cacauworking.attendance_management.domain.AttendanceManagement;
+import com.cacauworking.attendance_management.dto.AttendanceManagementGetDTO;
+import com.cacauworking.attendance_management.dto.HolidaysListDTO;
+import com.cacauworking.attendance_management.mapper.AttendanceManagementMapper;
 import com.cacauworking.attendance_management.service.services.AttendanceManagementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
 @RestController
-@RequestMapping("adimin/registrodeponto")
+@RequestMapping("registro-de-ponto")
 @RequiredArgsConstructor
 public class AttendanceManagementController {
 
     private final AttendanceManagementService service;
+    private final AttendanceManagementMapper mapper;
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public AttendanceManagement save(@RequestBody AttendanceManagement attendanceManagement) {
-        return null; /*service.save(new AttendanceManagement(attendanceManagement.getOvertime()));*/
+    @GetMapping
+    public List<AttendanceManagementGetDTO> findAll(){
+        return mapper.listAttendanceManagementToListAttendanceManagementGetDTO(service.findAll());
     }
 
-    @GetMapping("{id}")
-    public AttendanceManagement findAll(@PathVariable String id){
+    @GetMapping("{documentoFuncionario}")
+    public AttendanceManagementGetDTO findByEmployee(@PathVariable String documentoFuncionario){
+        return mapper.attendanceManagementToAttendanceManagementGetDTO(service.findByEmployee(documentoFuncionario));
+    }
 
-        return service.findById(id);
+    @GetMapping("banco-de-horas/{documentoFuncionario}")
+    public Long getOvertime(@PathVariable String documentoFuncionario){
+        return service.calculateOvertime(service.findByEmployee(documentoFuncionario)).toHours();
     }
 }

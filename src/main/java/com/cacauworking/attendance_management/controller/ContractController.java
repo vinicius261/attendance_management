@@ -1,5 +1,6 @@
 package com.cacauworking.attendance_management.controller;
 
+import com.cacauworking.attendance_management.domain.AttendanceManagement;
 import com.cacauworking.attendance_management.domain.Contract;
 import com.cacauworking.attendance_management.domain.Status;
 import com.cacauworking.attendance_management.dto.contractdto.*;
@@ -30,14 +31,16 @@ public class ContractController {
                 .start(dto.getStart())
                 .status(Status.ATIVO)
                 .build();
+
+
         return mapper.contractToContractGetDTO(
                 contractService.save(contract));
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Contract> findAll(){
-        return contractService.findAll();
+    public List<ContractGetDTO> findAll(){
+        return mapper.listContractToListContractGetDTO(contractService.findAll());
     }
 
     @GetMapping("{contractNumber}")
@@ -47,7 +50,7 @@ public class ContractController {
                         contractNumber));
     }
 
-    @PostMapping("status")
+    @GetMapping("status")
     public List<ContractGetDTO> findAllByStatus(@RequestBody ContractStatusDTO dto){
         return  contractService
                 .findAllByStatus(dto.getStatus())
@@ -65,8 +68,11 @@ public class ContractController {
 
     @PutMapping("dados/{contractNumber}")
     public ContractGetDTO updateData(@PathVariable String contractNumber, @RequestBody ContractUpdateDTO dto){
-        Contract contract = mapper.contractUpdateDTOToContract(dto);
-        contract.setContractNumber(contractNumber);
+        Contract contract = contractService.findByContractNumber(contractNumber);
+        contract.setContractNumber(dto.getContractNumber());
+        contract.setStart(dto.getStart());
+        contract.setEnd(dto.getEnd());
+        contract.setStatus(dto.getStatus());
         return mapper.contractToContractGetDTO(contractService.update(contract));
     }
 

@@ -3,6 +3,7 @@ package com.cacauworking.attendance_management.config;
 import com.cacauworking.attendance_management.dto.ErrorDTO;
 import com.cacauworking.attendance_management.exceptions.DataAlreadyExistisException;
 import com.cacauworking.attendance_management.exceptions.DataNotFoundException;
+import com.cacauworking.attendance_management.exceptions.FogetToRegisterException;
 import com.cacauworking.attendance_management.exceptions.InactiveContractException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -46,6 +47,12 @@ public class HandlerException {
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(InactiveContractException.class)
     public ErrorDTO handlerInactiveContract(InactiveContractException ex) {
+        return ErrorDTO.builder().message(ex.getMessage()).build();
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(FogetToRegisterException.class)
+    public ErrorDTO handlerForgetToRegister(FogetToRegisterException ex) {
         return ErrorDTO.builder().message(ex.getMessage()).build();
     }
 }

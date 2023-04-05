@@ -1,5 +1,6 @@
 package com.cacauworking.attendance_management.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +18,8 @@ public class AttendanceManagement {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JsonIgnoreProperties("attendanceManagement")
     private Contract contract;
     private String overtime;
     @OneToMany(mappedBy = "attendanceManagement")

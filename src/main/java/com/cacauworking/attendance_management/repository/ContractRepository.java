@@ -15,6 +15,7 @@ public interface ContractRepository extends CrudRepository<Contract, Long> {
     List<Contract> findAll();
     List<Contract> findAllByStatus(Status status);
     List<Contract> findAllByEmployee(Employee employee);
+    Contract findByEmployeeAndStatus(Employee employee, Status status);
     boolean existsByContractNumber(String contractNumber);
 
 }

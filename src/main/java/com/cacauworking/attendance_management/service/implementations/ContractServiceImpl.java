@@ -1,5 +1,6 @@
 package com.cacauworking.attendance_management.service.implementations;
 
+import com.cacauworking.attendance_management.domain.AttendanceManagement;
 import com.cacauworking.attendance_management.domain.Contract;
 import com.cacauworking.attendance_management.domain.Employee;
 import com.cacauworking.attendance_management.domain.Status;
@@ -7,6 +8,7 @@ import com.cacauworking.attendance_management.exceptions.DataAlreadyExistisExcep
 import com.cacauworking.attendance_management.exceptions.DataNotFoundException;
 import com.cacauworking.attendance_management.exceptions.InactiveContractException;
 import com.cacauworking.attendance_management.repository.ContractRepository;
+import com.cacauworking.attendance_management.repository.EmployeeRepository;
 import com.cacauworking.attendance_management.service.services.ContractService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,13 +20,26 @@ import java.util.List;
 public class ContractServiceImpl implements ContractService {
 
     private final ContractRepository repository;
+    private final EmployeeRepository employeeRepository;
 
     @Override
     public Contract save(Contract contract) {
-        if(repository.existsByContractNumber(contract.getContractNumber())){
-            throw new DataAlreadyExistisException("Esse contrato já existe");
+        if(repository.existsByContractNumber(contract.getContractNumber())
+                || (contract.getEmployee().getStatus().equals(Status.ATIVO))){
+
+            throw new DataAlreadyExistisException("Esse contrato já existe " +
+                    "ou o funcionário já tem um contrato ativo.");
         }
-        return repository.save(contract);
+        AttendanceManagement attendanceManagement = new AttendanceManagement();
+        attendanceManagement.setContract(contract);
+        contract.setAttendanceManagement(attendanceManagement);
+
+        Contract persistedContract = repository.save(contract);
+
+        contract.getEmployee().setStatus(Status.ATIVO);
+        employeeRepository.save(contract.getEmployee());
+
+        return persistedContract;
     }
 
     @Override
@@ -86,4 +101,5 @@ public class ContractServiceImpl implements ContractService {
     public void delete(Contract contract) {
         repository.delete(contract);
     }
+
 }

@@ -26,7 +26,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(repository.existsByDocument(employee.getDocument())){
             throw new DataAlreadyExistisException("Consultora Show já cadastrada.");
         }
-        employee.setStatus(Status.ATIVO);
+        employee.setStatus(Status.INATIVO);
         return repository.save(employee);
     }
 
