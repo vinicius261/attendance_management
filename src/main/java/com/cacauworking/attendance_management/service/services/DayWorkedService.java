@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface DayWorkedService {
     List<DayWorked> findAllByEmployee(AttendanceManagement attendance);
+
     void save(AttendanceManagement attendanceManagement);
+
     void saveLunchBegin(AttendanceManagement attendance);
 
     void saveLunchEnd(AttendanceManagement attendance);

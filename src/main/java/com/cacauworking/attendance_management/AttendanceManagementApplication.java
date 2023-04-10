@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class AttendanceManagementApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AttendanceManagementApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AttendanceManagementApplication.class, args);
+    }
 
 }

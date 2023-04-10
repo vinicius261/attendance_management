@@ -1,6 +1,5 @@
 package com.cacauworking.attendance_management.controller;
 
-import com.cacauworking.attendance_management.domain.AttendanceManagement;
 import com.cacauworking.attendance_management.domain.Contract;
 import com.cacauworking.attendance_management.domain.Status;
 import com.cacauworking.attendance_management.dto.contractdto.*;
@@ -24,7 +23,7 @@ public class ContractController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ContractGetDTO save (@RequestBody ContractSaveDTO dto){
+    public ContractGetDTO save(@RequestBody ContractSaveDTO dto) {
         Contract contract = Contract.builder()
                 .employee(employeeService.findByDocument(dto.getEmployeeDocument()))
                 .contractNumber(dto.getContractNumber())
@@ -32,42 +31,41 @@ public class ContractController {
                 .status(Status.ATIVO)
                 .build();
 
-
         return mapper.contractToContractGetDTO(
                 contractService.save(contract));
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ContractGetDTO> findAll(){
+    public List<ContractGetDTO> findAll() {
         return mapper.listContractToListContractGetDTO(contractService.findAll());
     }
 
     @GetMapping("{contractNumber}")
-    public ContractGetDTO findByNumber(@PathVariable String contractNumber){
+    public ContractGetDTO findByNumber(@PathVariable String contractNumber) {
         return mapper.contractToContractGetDTO(
                 contractService.findByContractNumber(
                         contractNumber));
     }
 
     @GetMapping("status")
-    public List<ContractGetDTO> findAllByStatus(@RequestBody ContractStatusDTO dto){
-        return  contractService
+    public List<ContractGetDTO> findAllByStatus(@RequestBody ContractStatusDTO dto) {
+        return contractService
                 .findAllByStatus(dto.getStatus())
                 .stream().map(mapper::contractToContractGetDTO)
                 .toList();
     }
 
     @GetMapping("/funcionario/{documentoFuncionario}")
-    public List<ContractGetDTO> findAllByEmployee(@PathVariable String documentoFuncionario){
-        return  contractService
+    public List<ContractGetDTO> findAllByEmployee(@PathVariable String documentoFuncionario) {
+        return contractService
                 .findAllByEmployee(employeeService.findByDocument(documentoFuncionario))
                 .stream().map(mapper::contractToContractGetDTO)
                 .toList();
     }
 
     @PutMapping("dados/{contractNumber}")
-    public ContractGetDTO updateData(@PathVariable String contractNumber, @RequestBody ContractUpdateDTO dto){
+    public ContractGetDTO updateData(@PathVariable String contractNumber, @RequestBody ContractUpdateDTO dto) {
         Contract contract = contractService.findByContractNumber(contractNumber);
         contract.setContractNumber(dto.getContractNumber());
         contract.setStart(dto.getStart());
@@ -77,7 +75,7 @@ public class ContractController {
     }
 
     @PutMapping("encerrar/{contractNumber}")
-    public ContractGetDTO updateStatus(@PathVariable String contractNumber, @RequestBody ContractEndDTO dto){
+    public ContractGetDTO updateStatus(@PathVariable String contractNumber, @RequestBody ContractEndDTO dto) {
         Contract contract = contractService.findByContractNumber(
                 contractNumber);
         contract.setEnd(dto.getEnd());
@@ -85,7 +83,7 @@ public class ContractController {
     }
 
     @DeleteMapping("{contractNumber}")
-    public void delete(@PathVariable String contractNumber){
+    public void delete(@PathVariable String contractNumber) {
         contractService.delete(
                 contractService.findByContractNumber(
                         contractNumber));

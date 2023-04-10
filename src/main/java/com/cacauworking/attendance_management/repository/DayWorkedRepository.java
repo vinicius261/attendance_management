@@ -12,5 +12,6 @@ import java.util.List;
 public interface DayWorkedRepository extends CrudRepository<DayWorked, Long> {
 
     DayWorked findByAttendanceManagementAndDate(AttendanceManagement attendance, LocalDate date);
+
     List<DayWorked> findAllByAttendanceManagement(AttendanceManagement attendance);
 }

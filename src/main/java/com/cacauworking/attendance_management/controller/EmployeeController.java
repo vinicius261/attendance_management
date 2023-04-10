@@ -5,11 +5,11 @@ import com.cacauworking.attendance_management.domain.Status;
 import com.cacauworking.attendance_management.dto.employeedto.EmployeeGetDTO;
 import com.cacauworking.attendance_management.dto.employeedto.EmployeeSaveDTO;
 import com.cacauworking.attendance_management.dto.employeedto.EmployeeSetDataDTO;
-import com.cacauworking.attendance_management.dto.employeedto.EmployeeSetStatusDTO;
 import com.cacauworking.attendance_management.mapper.EmployeeMapper;
 import com.cacauworking.attendance_management.service.services.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,19 +23,20 @@ public class EmployeeController {
     private final EmployeeMapper mapper;
 
     @PostMapping
-    public EmployeeGetDTO save(@RequestBody EmployeeSaveDTO dto){
+    @ResponseStatus(HttpStatus.CREATED)
+    public EmployeeGetDTO save(@Valid @RequestBody EmployeeSaveDTO dto) {
         Employee employee = service.save(mapper.employeeSaveDTOToEmployee(dto));
         return mapper.employeeToEmployeeGetDTO(employee);
     }
 
     @GetMapping("{document}")
-    public EmployeeGetDTO findByDocument(@PathVariable String document){
+    public EmployeeGetDTO findByDocument(@PathVariable String document) {
         Employee employee = service.findByDocument(document);
         return mapper.employeeToEmployeeGetDTO(employee);
     }
 
     @GetMapping
-    public List<EmployeeGetDTO> findAll(){
+    public List<EmployeeGetDTO> findAll() {
         List<Employee> employees = service.findAll();
         return employees
                 .stream()
@@ -44,7 +45,7 @@ public class EmployeeController {
     }
 
     @GetMapping("ativos")
-    public List<EmployeeGetDTO> findAllByStatus(){
+    public List<EmployeeGetDTO> findAllByStatus() {
         List<Employee> employees = service.findAllByStatus(Status.ATIVO);
         return employees
                 .stream()
@@ -53,7 +54,7 @@ public class EmployeeController {
     }
 
     @PutMapping("dados/{document}")
-    public EmployeeGetDTO updateData(@PathVariable String document, @RequestBody EmployeeSetDataDTO dto){
+    public EmployeeGetDTO updateData(@PathVariable String document, @RequestBody EmployeeSetDataDTO dto) {
         Employee employee = service.findByDocument(document);
         employee.setDocument(dto.getDocument());
         employee.setName(dto.getName());
@@ -64,17 +65,8 @@ public class EmployeeController {
                 service.update(employee));
     }
 
-    @PutMapping("status/{document}")
-    public EmployeeGetDTO updateStatus(@PathVariable String document, @RequestBody EmployeeSetStatusDTO dto){
-        Employee employee = service.findByDocument(document);
-        employee.setStatus(dto.getStatus());
-        return mapper.employeeToEmployeeGetDTO(
-                service.updateStatus(
-                        employee));
-    }
-
     @DeleteMapping("{document}")
-    public void delete(@PathVariable String document){
+    public void delete(@PathVariable String document) {
         service.delete(service.findByDocument(document));
     }
 }

@@ -3,9 +3,7 @@ package com.cacauworking.attendance_management.service.implementations;
 import com.cacauworking.attendance_management.domain.AttendanceManagement;
 import com.cacauworking.attendance_management.domain.DayWorked;
 import com.cacauworking.attendance_management.exceptions.DataNotFoundException;
-import com.cacauworking.attendance_management.repository.AttendanceManagementRepository;
 import com.cacauworking.attendance_management.repository.DayWorkedRepository;
-import com.cacauworking.attendance_management.service.services.AttendanceManagementService;
 import com.cacauworking.attendance_management.service.services.DayWorkedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,7 +33,7 @@ public class DayWorkedServiceImpl implements DayWorkedService {
     @Override
     public void saveLunchBegin(AttendanceManagement attendance) {
         DayWorked dayWorked = repository.findByAttendanceManagementAndDate(attendance, LocalDate.now());
-        if(dayWorked == null){
+        if (dayWorked == null) {
             throw new DataNotFoundException("Para registrar almoço precisa ter registrado a entrada.");
         }
         dayWorked.setLunchBegin(LocalDateTime.now());
@@ -45,7 +43,7 @@ public class DayWorkedServiceImpl implements DayWorkedService {
     @Override
     public void saveLunchEnd(AttendanceManagement attendance) {
         DayWorked dayWorked = repository.findByAttendanceManagementAndDate(attendance, LocalDate.now());
-        if(dayWorked.getLunchBegin() == null){
+        if (dayWorked.getLunchBegin() == null) {
             throw new DataNotFoundException("Para registrar o fim almoço precisa ter registrado a entrada.");
         }
         dayWorked.setLunchEnd(LocalDateTime.now());
@@ -55,7 +53,7 @@ public class DayWorkedServiceImpl implements DayWorkedService {
     @Override
     public void saveLeaveTime(AttendanceManagement attendance) {
         DayWorked dayWorked = repository.findByAttendanceManagementAndDate(attendance, LocalDate.now());
-        if(dayWorked.getLunchEnd() == null){
+        if (dayWorked.getLunchEnd() == null) {
             throw new DataNotFoundException("Para registrar a saída precisa ter registrado o fim do almoço.");
         }
         dayWorked.setLeavingTime(LocalDateTime.now());

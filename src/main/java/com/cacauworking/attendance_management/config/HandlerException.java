@@ -5,6 +5,7 @@ import com.cacauworking.attendance_management.exceptions.DataAlreadyExistisExcep
 import com.cacauworking.attendance_management.exceptions.DataNotFoundException;
 import com.cacauworking.attendance_management.exceptions.FogetToRegisterException;
 import com.cacauworking.attendance_management.exceptions.InactiveContractException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -54,5 +55,11 @@ public class HandlerException {
     @ExceptionHandler(FogetToRegisterException.class)
     public ErrorDTO handlerForgetToRegister(FogetToRegisterException ex) {
         return ErrorDTO.builder().message(ex.getMessage()).build();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ErrorDTO handlerInvalidDocument(ConstraintViolationException ex) {
+        return ErrorDTO.builder().message("Número do registro de contribuinte individual brasileiro (CPF) inválido").build();
     }
 }

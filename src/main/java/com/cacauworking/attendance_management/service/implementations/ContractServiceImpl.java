@@ -24,8 +24,8 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public Contract save(Contract contract) {
-        if(repository.existsByContractNumber(contract.getContractNumber())
-                || (contract.getEmployee().getStatus().equals(Status.ATIVO))){
+        if (repository.existsByContractNumber(contract.getContractNumber())
+                || (contract.getEmployee().getStatus().equals(Status.ATIVO))) {
 
             throw new DataAlreadyExistisException("Esse contrato já existe " +
                     "ou o funcionário já tem um contrato ativo.");
@@ -45,7 +45,7 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public List<Contract> findAll() {
         List<Contract> contracts = repository.findAll();
-        if(contracts.isEmpty()){
+        if (contracts.isEmpty()) {
             throw new DataNotFoundException("Ainda não exitem contratos cadastrados.");
         }
         return contracts;
@@ -54,16 +54,17 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public List<Contract> findAllByStatus(Status status) {
         List<Contract> contracts = repository.findAllByStatus(status);
-        if(contracts.isEmpty()){
+        if (contracts.isEmpty()) {
             throw new DataNotFoundException("Ainda não exitem contratos " +
                     status.toString().toLowerCase() + "s.");
         }
         return contracts;
     }
+
     @Override
     public List<Contract> findAllByEmployee(Employee employee) {
         List<Contract> contracts = repository.findAllByEmployee(employee);
-        if(contracts.isEmpty()){
+        if (contracts.isEmpty()) {
             throw new DataNotFoundException("Ainda não exitem contratos de " +
                     employee.getName());
         }
@@ -72,14 +73,18 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public Contract findByContractNumber(String number) {
-        if(! repository.existsByContractNumber(number)){
+        if (!repository.existsByContractNumber(number)) {
             throw new DataNotFoundException("Contrato não encontrado");
         }
-        return repository.findByContractNumber(number) ;
+        return repository.findByContractNumber(number);
     }
 
     @Override
     public Contract update(Contract contract) {
+        if (repository.existsByContractNumber(contract.getContractNumber())) {
+            throw new DataAlreadyExistisException("Esse número de contrato já está cadastrado," +
+                    " não é possível fazer essa alteração.");
+        }
         Contract contractToUpdate = findByContractNumber(contract.getContractNumber());
         contractToUpdate.setContractNumber(contractToUpdate.getContractNumber());
         contractToUpdate.setStart(contract.getStart());
@@ -90,10 +95,15 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public Contract updateEnd(Contract contract) {
-        if(contract.getStatus().equals(Status.INATIVO)){
+        if (contract.getStatus().equals(Status.INATIVO)) {
             throw new InactiveContractException();
         }
         contract.setStatus(Status.INATIVO);
+
+        Employee employee = contract.getEmployee();
+        employee.setStatus(Status.INATIVO);
+        employeeRepository.save(employee);
+
         return repository.save(contract);
     }
 

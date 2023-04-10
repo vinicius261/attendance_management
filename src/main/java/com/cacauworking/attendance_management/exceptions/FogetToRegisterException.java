@@ -1,7 +1,7 @@
 package com.cacauworking.attendance_management.exceptions;
 
 public class FogetToRegisterException extends RuntimeException {
-    public FogetToRegisterException(){
+    public FogetToRegisterException() {
         super("Esqueceu de registrar");
     }
 }

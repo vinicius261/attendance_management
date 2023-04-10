@@ -8,10 +8,14 @@ import java.util.List;
 public interface EmployeeService {
 
     Employee save(Employee employee);
+
     List<Employee> findAll();
-    public List<Employee> findAllByStatus (Status status);
+
+    public List<Employee> findAllByStatus(Status status);
+
     Employee findByDocument(String id);
+
     Employee update(Employee employee);
-    Employee updateStatus(Employee employeeSetStatusDTOToEmployee);
+
     void delete(Employee employee);
 }

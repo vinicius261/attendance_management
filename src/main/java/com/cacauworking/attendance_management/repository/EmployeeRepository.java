@@ -12,5 +12,6 @@ public interface EmployeeRepository extends CrudRepository<Employee, Long> {
     Employee findByDocument(String document);
 
     List<Employee> findAllByStatus(Status status);
+
     boolean existsByDocument(String document);
 }

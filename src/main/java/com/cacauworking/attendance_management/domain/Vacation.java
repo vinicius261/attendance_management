@@ -15,7 +15,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Vacation {
 
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @ManyToOne
     private AttendanceManagement attendanceManagement;

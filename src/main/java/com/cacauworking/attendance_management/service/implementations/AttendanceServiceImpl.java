@@ -1,8 +1,10 @@
 package com.cacauworking.attendance_management.service.implementations;
 
-import com.cacauworking.attendance_management.domain.*;
+import com.cacauworking.attendance_management.domain.AttendanceManagement;
+import com.cacauworking.attendance_management.domain.Contract;
+import com.cacauworking.attendance_management.domain.DayWorked;
+import com.cacauworking.attendance_management.domain.Status;
 import com.cacauworking.attendance_management.dto.HolidayDTO;
-import com.cacauworking.attendance_management.dto.HolidaysListDTO;
 import com.cacauworking.attendance_management.exceptions.FogetToRegisterException;
 import com.cacauworking.attendance_management.repository.AttendanceManagementRepository;
 import com.cacauworking.attendance_management.repository.ContractRepository;
@@ -50,14 +52,14 @@ public class AttendanceServiceImpl implements AttendanceManagementService {
     }
 
     @Override
-    public Duration calculateOvertime(AttendanceManagement attendance) {
+    public AttendanceManagement calculateOvertime(AttendanceManagement attendance) {
         List<DayWorked> daysWorked = attendance.getWorkedDays();
 
         Duration overtime = Duration.ZERO;
 
-        for (DayWorked day: daysWorked) {
+        for (DayWorked day : daysWorked) {
             Duration hoursPerContract = Duration.between(LocalTime.of(9, 00), LocalTime.of(18, 00))
-                    .minus(Duration.of(1l, ChronoUnit.HOURS));
+                    .minus(Duration.of(1l, ChronoUnit.MINUTES));
 
             try {
                 Duration morningHours = Duration.between(day.getEntryTime(), day.getLunchBegin());
@@ -65,13 +67,13 @@ public class AttendanceServiceImpl implements AttendanceManagementService {
                 Duration totalDayHours = morningHours.plus(afternoonHours);
 
                 Duration extra = totalDayHours.minus(hoursPerContract);
-                if (isFeriado(day.getDate().getYear())){
+                if (isFeriado(day.getDate().getYear())) {
                     overtime.plus(extra.multipliedBy(2));
                 }
 
                 overtime = overtime.plus(extra);
-            }catch (NullPointerException ex){
-                if (day.getDate().equals(LocalDate.now())){
+            } catch (NullPointerException ex) {
+                if (day.getDate().equals(LocalDate.now())) {
                     break;
                 }
 
@@ -79,16 +81,19 @@ public class AttendanceServiceImpl implements AttendanceManagementService {
             }
         }
 
-        return overtime;
+        attendance.setOvertime(overtime);
+
+        return attendance;
     }
 
-    public boolean isFeriado(Integer year){
-       String url = "https://brasilapi.com.br/api/feriados/v1/" + year;
-       ResponseEntity<List<HolidayDTO>> response = restTemplate
-               .exchange(url, HttpMethod.GET,null, new ParameterizedTypeReference<List<HolidayDTO>>() {});
+    public boolean isFeriado(Integer year) {
+        String url = "https://brasilapi.com.br/api/feriados/v1/" + year;
+        ResponseEntity<List<HolidayDTO>> response = restTemplate
+                .exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<HolidayDTO>>() {
+                });
 
-        if(response.getBody().stream()
-                .anyMatch(localDate -> localDate.equals(LocalDate.now()))){
+        if (response.getBody().stream()
+                .anyMatch(localDate -> localDate.equals(LocalDate.now()))) {
             return true;
         }
 

@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 @Builder
 public class DayWorked {
 
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @ManyToOne
     @JsonIgnoreProperties("workedDays")

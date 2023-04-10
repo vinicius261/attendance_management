@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Duration;
 import java.util.List;
 
 @Entity
@@ -16,12 +17,13 @@ import java.util.List;
 @AllArgsConstructor
 public class AttendanceManagement {
 
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @OneToOne(cascade = CascadeType.PERSIST)
     @JsonIgnoreProperties("attendanceManagement")
     private Contract contract;
-    private String overtime;
+    private Duration overtime;
     @OneToMany(mappedBy = "attendanceManagement")
     private List<DayWorked> workedDays;
     @OneToMany(mappedBy = "attendanceManagement")
